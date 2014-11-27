@@ -368,19 +368,6 @@ class PdoGsb{
  }
 
 
-	/** Retourne les montants des frais forfait classé par id:
- * forfait etape
- * Frais Kilométrique
- * Nuitée Hôtel
- * Repas Restaurant
- */
-public function montantFraisForfait()
-{
-	$req= "SELECT montant FROM fraisforfait ORDER BY id";
-	$res = PdoGsb::$monPdo->query($req);
-	$lesLignes = $res->fetchAll();
-	return $lesLignes; 
-}
 
 }//fin
 ?>
