@@ -25,7 +25,14 @@ switch($action){
 		$numAnnee =substr( $leMois,0,4);
 		$numMois =substr( $leMois,4,2);
 		$libEtat = $lesInfosFicheFrais['libEtat'];
-		$montantValide = $lesInfosFicheFrais['montantValide'];
+		if ($lesInfosFicheFrais['idEtat']== 'CL' || $lesInfosFicheFrais['idEtat']== 'CR')
+		{
+			$montantValide = $pdo ->majMontantFrais($lesInfosFicheFrais,$lesFraisForfait); //montant modifié si fiche en CL ou CR
+		}
+		else
+		{
+			$montantValide = $lesInfosFicheFrais['montantValide'];
+		}
 		$nbJustificatifs = $lesInfosFicheFrais['nbJustificatifs'];
 		$dateModif =  $lesInfosFicheFrais['dateModif'];
 		$dateModif =  dateAnglaisVersFrancais($dateModif);

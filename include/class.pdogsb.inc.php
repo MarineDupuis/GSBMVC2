@@ -1,4 +1,9 @@
 ﻿<?php
+
+
+//ligne 295 a supprimer
+
+
 /** 
  * Classe d'accès aux données. 
  
@@ -106,9 +111,10 @@ class PdoGsb{
  * @return l'id, le libelle et la quantité sous la forme d'un tableau associatif 
 */
 	public function getLesFraisForfait($idVisiteur, $mois){
-		$req = "select fraisforfait.id as idfrais, fraisforfait.libelle as libelle, 
-		lignefraisforfait.quantite as quantite from lignefraisforfait inner join fraisforfait 
-		on fraisforfait.id = lignefraisforfait.idfraisforfait
+		$req = "select fraisforfait.id as idfrais,
+		fraisforfait.libelle as libelle,
+		lignefraisforfait.quantite as quantite
+		from lignefraisforfait inner join fraisforfait on fraisforfait.id = lignefraisforfait.idfraisforfait
 		where lignefraisforfait.idvisiteur ='$idVisiteur' and lignefraisforfait.mois='$mois' 
 		order by lignefraisforfait.idfraisforfait";	
 		$res = PdoGsb::$monPdo->query($req);
@@ -278,11 +284,16 @@ class PdoGsb{
  * @return un tableau avec des champs de jointure entre une fiche de frais et la ligne d'état 
 */	
 	public function getLesInfosFicheFrais($idVisiteur,$mois){
-		$req = "select ficheFrais.idEtat as idEtat, ficheFrais.dateModif as dateModif, ficheFrais.nbJustificatifs as nbJustificatifs, 
-			ficheFrais.montantValide as montantValide, etat.libelle as libEtat from  fichefrais inner join Etat on ficheFrais.idEtat = Etat.id 
-			where fichefrais.idvisiteur ='$idVisiteur' and fichefrais.mois = '$mois'";
+		$req = "select ficheFrais.idEtat as idEtat,
+		ficheFrais.dateModif as dateModif,
+		ficheFrais.nbJustificatifs as nbJustificatifs, 
+		ficheFrais.montantValide as montantValide,
+		etat.libelle as libEtat
+		from  fichefrais inner join Etat on ficheFrais.idEtat = Etat.id 
+		where fichefrais.idvisiteur ='$idVisiteur' and fichefrais.mois = '$mois'";
 		$res = PdoGsb::$monPdo->query($req);
 		$laLigne = $res->fetch();
+		echo $laLigne['idEtat'],'<br>'; // affiche etat de la fiche de frais, commande A SUPPRIMER [JULIEN]
 		return $laLigne;
 	}
 /**
@@ -298,5 +309,62 @@ class PdoGsb{
 		where fichefrais.idvisiteur ='$idVisiteur' and fichefrais.mois = '$mois'";
 		PdoGsb::$monPdo->exec($req);
 	}
+	
+	/** Modifie la valeur du montant des frais lorsque la fiche est CR ou CL :
+ * 
+ */
+ 
+ public function majMontantFrais($lesInfosFicheFrais,$lesFraisForfait)
+ {
+	$montantValide = '0.00';
+	$nb = array(0=>''); // creation tableau stockage nombre de frais forfait
+	$n=1;
+	foreach ($lesFraisForfait as $unFraisForfait) //parcours des valeurs pour les frais
+	{
+		$quantite = $unFraisForfait['quantite'];
+		$nb[$n] = $quantite; //stockage de la valeur dans le tableau
+		$n++;
+	}
+	// $nb[1] = nombre de forfait etape
+	// $nb[2] = nombre de Frais Kilométrique
+	// $nb[3] = nombre de Nuitée Hôtel
+	// $nb[4] = nombre de Repas Restaurant
+	
+	$req= "SELECT montant FROM fraisforfait ORDER BY id"; //recupere les montant de chaque frais
+	$res = PdoGsb::$monPdo->query($req);
+	$montant = $res->fetchAll();
+	
+	$tab = array(0=>''); // creation tableau stockage nombre de frais forfait
+	$n=1;
+	foreach ($montant as $unMontant) //parcours des valeurs pour les frais
+	{
+		$prix = $unMontant['montant'];
+		$tab[$n] = $prix; //stockage de la valeur dans le tableau
+		$n++;
+	}
+	// $tab[1] = nombre de forfait etape
+	// $tab[2] = nombre de Frais Kilométrique
+	// $tab[3] = nombre de Nuitée Hôtel
+	// $tab[4] = nombre de Repas Restaurant
+	
+	$montantValide = $nb[1]* $tab[1] + $nb[2]* $tab[2] + $nb[3]* $tab[3] + $nb[4]* $tab[4];
+	return $montantValide;
+ }
+
+
+	/** Retourne les montants des frais forfait classé par id:
+ * forfait etape
+ * Frais Kilométrique
+ * Nuitée Hôtel
+ * Repas Restaurant
+ */
+public function montantFraisForfait()
+{
+	$req= "SELECT montant FROM fraisforfait ORDER BY id";
+	$res = PdoGsb::$monPdo->query($req);
+	$lesLignes = $res->fetchAll();
+	return $lesLignes; 
 }
+
+}//fin
 ?>
