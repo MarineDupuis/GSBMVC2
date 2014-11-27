@@ -11,6 +11,7 @@ switch($action){
 	case 'valideConnexion':{
 		$login = $_REQUEST['login'];
 		$mdp = md5($_REQUEST['mdp']);
+                
 		$visiteur = $pdo->getInfosVisiteur($login,$mdp);
                 $comptable = $pdo->getInfosComptable($login,$mdp);
                 

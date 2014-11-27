@@ -6,12 +6,10 @@ if(!isset($_REQUEST['action'])){
 $action = $_REQUEST['action'];
 switch($action){
 	case 'nouveauVisiteur':{
-		include("vues/v_nouveauVisiteur.php");
-		break;
-	}
-	default :{
-		include("vues/v_connexion.php");
-		break;
+            
+            
+            include("vues/v_nouveauVisiteur.php");
+            break;
 	}
 }
 ?>

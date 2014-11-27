@@ -10,7 +10,7 @@
         <ul class="list-unstyled">
 			
            <li>
-              <a href="index.php?uc=nouveauVisiteur&action=nouveauVisiteur" title="Creer un nouveau visiteur">Nouveau visiteur</a>
+              <a href="index.php?uc=nouveauVisiteur&action=nouveauVisiteur" title="Créer un nouveau visiteur">Nouveau visiteur</a>
            </li>
  	   <li>
               <a href="index.php?uc=connexion&action=deconnexion" title="Se déconnecter">Déconnexion</a>

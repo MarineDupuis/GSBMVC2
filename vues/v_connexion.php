@@ -30,7 +30,7 @@ if (isset($_REQUEST['erreurs']))
          </div>
          </div>
           <button type="submit" class="btn btn-primary">Valider</button>
-          <button type="reset" class="btn btn-primary">annuler</button>
+          <button type="reset" class="btn btn-primary">Annuler</button>
          </fieldset>
       </form>
 
